@@ -48,5 +48,22 @@ class Database:
         self.session.commit()
         return pereval.id
 
+    def get_pereval_by_id(self, id):
+        return self.session.query(PerevalAdded).filter(PerevalAdded.id == id).first()
+
+    def update_pereval(self, id, data):
+        pereval = self.get_pereval_by_id(id)
+        if not pereval:
+            return None
+        for key, value in data.items():
+            setattr(pereval, key, value)
+        self.session.commit()
+        return pereval
+
+    def get_pereval_by_email(self, email):
+        return self.session.query(PerevalAdded).filter(
+            PerevalAdded.raw_data["user_email"].astext == email
+        ).all()
+
     def close(self):
         self.session.close()
